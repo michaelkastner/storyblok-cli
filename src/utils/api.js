@@ -13,6 +13,10 @@ module.exports = {
   spaceId: null,
   region: '',
 
+  sleep () {
+    return new Promise(resolved => setTimeout(() => resolved(), 400));
+  }
+  
   getClient () {
     const { region } = creds.get()
 
@@ -202,96 +206,122 @@ module.exports = {
     this.region = region
   },
 
-  getPresets () {
+  async getPresets () {
     const client = this.getClient()
 
-    return client
+    const result = client
       .get(this.getPath('presets'))
       .then(data => data.data.presets || [])
-      .catch(err => Promise.reject(err))
+      .catch(err => Promise.reject(err));
+    await this.sleep();
+    return result;
   },
 
-  getSpaceOptions () {
+  async getSpaceOptions () {
     const client = this.getClient()
 
-    return client
+    const result = client
       .get(this.getPath(''))
       .then((data) => data.data.space.options || {})
-      .catch((err) => Promise.reject(err))
+      .catch((err) => Promise.reject(err));
+    await this.sleep();
+    return result;
   },
 
-  getComponents () {
+  async getComponents () {
     const client = this.getClient()
 
-    return client
+    const result = client
       .get(this.getPath('components'))
       .then(data => data.data.components || [])
-      .catch(err => Promise.reject(err))
+      .catch(err => Promise.reject(err));
+    await this.sleep();
+    return result;
   },
 
-  getComponentGroups () {
+  async getComponentGroups () {
     const client = this.getClient()
 
-    return client
+    const result = client
       .get(this.getPath('component_groups'))
       .then(data => data.data.component_groups || [])
-      .catch(err => Promise.reject(err))
+      .catch(err => Promise.reject(err));
+    await this.sleep();
+    return result;
   },
 
-  getDatasources () {
+  async getDatasources () {
     const client = this.getClient()
 
-    return client
+    const result = client
       .get(this.getPath('datasources'))
       .then(data => data.data.datasources || [])
-      .catch(err => Promise.reject(err))
+      .catch(err => Promise.reject(err));
+    await this.sleep();
+    return result;
   },
 
-  deleteDatasource (id) {
+  async deleteDatasource (id) {
     const client = this.getClient()
 
-    return client
+    const result = client
       .delete(this.getPath(`datasources/${id}`))
-      .catch(err => Promise.reject(err))
+      .catch(err => Promise.reject(err));
+    await this.sleep();
+    return result;
   },
 
 
-  post (path, props) {
-    return this.sendRequest(path, 'post', props)
+  async post (path, props) {
+    const result = await this.sendRequest(path, 'post', props);
+    await this.sleep();
+    return result;
   },
 
-  put (path, props) {
-    return this.sendRequest(path, 'put', props)
+  async put (path, props) {
+    const result =  this.sendRequest(path, 'put', props);
+    await this.sleep();
+    return result;
   },
 
-  get (path, options = {}) {
-    return this.sendRequest(path, 'get', options)
+  async get (path, options = {}) {
+    const result =  this.sendRequest(path, 'get', options);
+    await this.sleep();
+    return result;
   },
 
-  getStories (params = {}) {
+  async getStories (params = {}) {
     const client = this.getClient()
     const _path = this.getPath('stories')
 
-    return client.getAll(_path, params)
+    const result =  client.getAll(_path, params)
+    await this.sleep();
+    return result;
   },
 
-  getSingleStory (id, options = {}) {
+  async getSingleStory (id, options = {}) {
     const client = this.getClient()
     const _path = this.getPath(`stories/${id}`)
 
-    return client.get(_path, options)
-      .then(response => response.data.story || {})
+    const result = client.get(_path, options)
+      .then(response => response.data.story || {});
+    await this.sleep();
+    return result;
   },
 
-  delete (path) {
-    return this.sendRequest(path, 'delete')
+  async delete (path) {
+    const result = this.sendRequest(path, 'delete');
+    await this.sleep();
+    return result;
   },
 
-  sendRequest (path, method, props = {}) {
+  async sendRequest (path, method, props = {}) {
     const client = this.getClient()
     const _path = this.getPath(path)
 
-    return client[method](_path, props)
+    const result = client[method](_path, props)
+    await this.sleep();
+    return result;
   },
 
   async getAllSpacesByRegion (region) {
