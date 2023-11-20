@@ -15,7 +15,7 @@ module.exports = {
 
   sleep () {
     return new Promise(resolved => setTimeout(() => resolved(), 400));
-  }
+  },
   
   getClient () {
     const { region } = creds.get()
