@@ -13,11 +13,11 @@ module.exports = {
   spaceId: null,
   region: '',
 
-  sleep () {
+  sleep() {
     return new Promise(resolved => setTimeout(() => resolved(), 400));
   },
-  
-  getClient () {
+
+  getClient() {
     const { region } = creds.get()
 
     try {
@@ -34,7 +34,7 @@ module.exports = {
     }
   },
 
-  getPath (path) {
+  getPath(path) {
     if (this.spaceId) {
       return `spaces/${this.spaceId}/${path}`
     }
@@ -42,7 +42,7 @@ module.exports = {
     return path
   },
 
-  async login (content) {
+  async login(content) {
     const { email, password, region = 'eu' } = content
     try {
       const response = await axios.post(`${this.apiSwitcher(region)}users/login`, {
@@ -58,7 +58,7 @@ module.exports = {
             type: 'input',
             name: 'otp_attempt',
             message: 'We sent a code to your email / phone, please insert the authentication code:',
-            validate (value) {
+            validate(value) {
               if (value.length > 0) {
                 return true
               }
@@ -85,7 +85,7 @@ module.exports = {
     }
   },
 
-  async getUser () {
+  async getUser() {
     const { region } = creds.get()
 
     try {
@@ -100,7 +100,7 @@ module.exports = {
     }
   },
 
-  persistCredentials (email, token = null, region = 'eu') {
+  persistCredentials(email, token = null, region = 'eu') {
     if (token) {
       this.oauthToken = token
       creds.set(email, token, region)
@@ -110,7 +110,7 @@ module.exports = {
     return Promise.reject(new Error('The code could not be authenticated.'))
   },
 
-  async processLogin (token = null, region = null) {
+  async processLogin(token = null, region = null) {
     try {
       if (token && region) {
         await this.loginWithToken({ token, region })
@@ -149,7 +149,7 @@ module.exports = {
     }
   },
 
-  async loginWithToken (content) {
+  async loginWithToken(content) {
     const { token, region } = content
     try {
       const { data } = await axios.get(`${this.apiSwitcher(region)}users/me`, {
@@ -165,14 +165,14 @@ module.exports = {
     }
   },
 
-  logout (unauthorized) {
+  logout(unauthorized) {
     if (creds.get().email && unauthorized) {
       console.log(chalk.red('X') + ' Your login seems to be expired, we logged you out. Please log back in again.')
     }
     creds.set(null)
   },
 
-  signup (email, password, region = 'eu') {
+  signup(email, password, region = 'eu') {
     return axios.post(USERS_ROUTES.SIGNUP, {
       email: email,
       password: password,
@@ -188,7 +188,7 @@ module.exports = {
       .catch(err => Promise.reject(err))
   },
 
-  isAuthorized () {
+  isAuthorized() {
     const { token } = creds.get() || {}
     if (token) {
       this.oauthToken = token
@@ -198,15 +198,15 @@ module.exports = {
     return false
   },
 
-  setSpaceId (spaceId) {
+  setSpaceId(spaceId) {
     this.spaceId = spaceId
   },
 
-  setRegion (region) {
+  setRegion(region) {
     this.region = region
   },
 
-  async getPresets () {
+  async getPresets() {
     const client = this.getClient()
 
     const result = client
@@ -217,7 +217,7 @@ module.exports = {
     return result;
   },
 
-  async getSpaceOptions () {
+  async getSpaceOptions() {
     const client = this.getClient()
 
     const result = client
@@ -228,7 +228,7 @@ module.exports = {
     return result;
   },
 
-  async getComponents () {
+  async getComponents() {
     const client = this.getClient()
 
     const result = client
@@ -239,7 +239,7 @@ module.exports = {
     return result;
   },
 
-  async getComponentGroups () {
+  async getComponentGroups() {
     const client = this.getClient()
 
     const result = client
@@ -250,7 +250,7 @@ module.exports = {
     return result;
   },
 
-  async getDatasources () {
+  async getDatasources() {
     const client = this.getClient()
 
     const result = client
@@ -261,7 +261,7 @@ module.exports = {
     return result;
   },
 
-  async deleteDatasource (id) {
+  async deleteDatasource(id) {
     const client = this.getClient()
 
     const result = client
@@ -272,34 +272,34 @@ module.exports = {
   },
 
 
-  async post (path, props) {
+  async post(path, props) {
     const result = await this.sendRequest(path, 'post', props);
     await this.sleep();
     return result;
   },
 
-  async put (path, props) {
-    const result =  this.sendRequest(path, 'put', props);
+  async put(path, props) {
+    const result = this.sendRequest(path, 'put', props);
     await this.sleep();
     return result;
   },
 
-  async get (path, options = {}) {
-    const result =  this.sendRequest(path, 'get', options);
+  async get(path, options = {}) {
+    const result = this.sendRequest(path, 'get', options);
     await this.sleep();
     return result;
   },
 
-  async getStories (params = {}) {
+  async getStories(params = {}) {
     const client = this.getClient()
     const _path = this.getPath('stories')
 
-    const result =  client.getAll(_path, params)
+    const result = client.getAll(_path, params)
     await this.sleep();
     return result;
   },
 
-  async getSingleStory (id, options = {}) {
+  async getSingleStory(id, options = {}) {
     const client = this.getClient()
     const _path = this.getPath(`stories/${id}`)
 
@@ -309,13 +309,13 @@ module.exports = {
     return result;
   },
 
-  async delete (path) {
+  async delete(path) {
     const result = this.sendRequest(path, 'delete');
     await this.sleep();
     return result;
   },
 
-  async sendRequest (path, method, props = {}) {
+  async sendRequest(path, method, props = {}) {
     const client = this.getClient()
     const _path = this.getPath(path)
 
@@ -324,7 +324,7 @@ module.exports = {
     return result;
   },
 
-  async getAllSpacesByRegion (region) {
+  async getAllSpacesByRegion(region) {
     const customClient = new Storyblok({
       accessToken: this.accessToken,
       oauthToken: this.oauthToken,
@@ -339,7 +339,7 @@ module.exports = {
       .catch(err => Promise.reject(err))
   },
 
-  apiSwitcher (region) {
+  apiSwitcher(region) {
     return region ? REGIONS[region].apiEndpoint : REGIONS[this.region].apiEndpoint
   }
 }
